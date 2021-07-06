@@ -82,7 +82,7 @@ public class Graph {
         p.next = edges[x];
         edges[x] = p;
         degree[x]++;
-        if (directed == false) {
+        if (!directed) {
             insertEdge(y,x,true);
         } else {
             nedges++;
@@ -96,7 +96,7 @@ public class Graph {
         }
     }
 
-    public void bfs(int start) {
+    public void bfs(int start, GraphVisitor bfsVisitor) {
         initializeSearch();
 
         Queue<Integer> q = new ArrayDeque<>();
@@ -110,44 +110,45 @@ public class Graph {
 
         while (!q.isEmpty()) {
             v = q.remove();
-            processVertexEarly(v);
+            bfsVisitor.processVertexEarly(v);
             processed[v] = true;
             p = edges[v];
             while( p != null) {
                 y = p.y;
-                if ((processed[y] == false) || directed) {
-                    processEdge(v,y);
+                if ((!processed[y]) || directed) {
+                    bfsVisitor.processEdge(v, y);
                 }
-                if (discovered[y] == false) {
+                if (!discovered[y]) {
                     q.add(y);
                     discovered[y] = true;
                     parent[y] = v;
                 }
                 p = p.next;
             }
-            processVertexLate(v);
+            bfsVisitor.processVertexLate(v);
         }
     }
 
-    // These are to be overridden by sub classes of Graph - the key idea from the book to generalize Graph
-    protected void processEdge(int x, int y) {
-        System.out.printf("processed edge (%d, %d)\n",x,y);
-    }
-
-    protected void processVertexEarly(int v) {
-        System.out.printf("processed vertex %d\n", v);
-    }
-
-    protected void processVertexLate(int v) {
-
-    }
-
-    void findPath(int start, int end) {
+    // CAREFUL this method needs parents to be filled by prior search
+    public void findPath(int start, int end) {
         if (start == end || end == -1) {
             System.out.printf("\n%d",start);
         } else {
             findPath(start,parent[end]);
             System.out.printf(" %d",end);
+        }
+    }
+
+    public void connectedComponents(GraphVisitor ccVisitor) {
+        int c = 0;
+
+        for (int i=1; i<=nvertices; i++) {
+            if (!discovered[i]) {
+                c++;
+                System.out.printf("Component %d:",c);
+                bfs(i,ccVisitor);
+                System.out.println();
+            }
         }
     }
 
