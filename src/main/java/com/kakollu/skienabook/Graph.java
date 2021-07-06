@@ -142,9 +142,18 @@ public class Graph {
 
     }
 
+    void findPath(int start, int end) {
+        if (start == end || end == -1) {
+            System.out.printf("\n%d",start);
+        } else {
+            findPath(start,parent[end]);
+            System.out.printf(" %d",end);
+        }
+    }
+
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         Edgenode p;
         for (int i=1; i<=nvertices; i++) {

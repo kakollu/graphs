@@ -16,4 +16,12 @@ public class GraphTest {
         graph.readGraph("src/test/resources/simple_graph.txt");
         graph.bfs(1);
     }
+
+    @Test
+    public void bfsPathTest() {
+        Graph graph = new Graph(false);
+        graph.readGraph("src/test/resources/simple_graph.txt");
+        graph.bfs(1);
+        graph.findPath(1,4);
+    }
 }
