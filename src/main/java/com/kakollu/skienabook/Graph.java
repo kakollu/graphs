@@ -15,6 +15,9 @@ public class Graph {
 
     Vertices were implicit in Skiena's code - I may want an inheritable class that can hold data
 
+    TODO improve data structure to allow simultaneous execution of algorithms.
+     Currently state variables are shared by algorithms.
+     Maybe the algorithm should bring its state variables
      */
     public static int MAXV = 1000;
 
@@ -28,6 +31,9 @@ public class Graph {
     boolean[] processed;
     int[] parent;
 
+    TwoColor[] color;
+    boolean bipartite;
+
     public Graph(boolean directed) {
         degree = new int[MAXV+1];
         edges = new Edgenode[MAXV+1];
@@ -36,6 +42,8 @@ public class Graph {
         discovered = new boolean[MAXV+1];
         processed = new boolean[MAXV+1];
         parent = new int[MAXV+1];
+
+        color = new TwoColor[Graph.MAXV+1];
     }
 
     private void init(boolean directed) {
@@ -89,7 +97,7 @@ public class Graph {
         }
     }
 
-    private void initializeSearch() {
+    public void initializeSearch() {
         for (int i=1; i<nvertices; i++) {
             processed[i] = discovered[i] = false;
             parent[i] = -1;
@@ -97,7 +105,7 @@ public class Graph {
     }
 
     public void bfs(int start, GraphVisitor bfsVisitor) {
-        initializeSearch();
+//        initializeSearch();
 
         Queue<Integer> q = new ArrayDeque<>();
 
@@ -150,6 +158,25 @@ public class Graph {
                 System.out.println();
             }
         }
+    }
+
+    public void twocolor(GraphVisitor twocolorVisitor) {
+
+        for (int i=1; i<=nvertices; i++) {
+            color[i] = TwoColor.UNCOLORED;
+        }
+
+        bipartite = true;
+
+        initializeSearch();
+
+        for (int i=1; i<=nvertices; i++) {
+            if (!discovered[i]) {
+                color[i] = TwoColor.WHITE;
+                bfs(i,twocolorVisitor);
+            }
+        }
+
     }
 
     @Override
