@@ -68,4 +68,12 @@ public class GraphTest {
         simpleGraph1.dfs(1,bfsVisitor);
         simpleGraph1.findPath(1,4);
     }
+
+    @Test
+    public void cycleTest() {
+        GraphVisitor cycleVisitor = new CycleVisitor(simpleGraph1);
+        simpleGraph1.dfs(1,cycleVisitor);
+        GraphVisitor cycleVisitor2 = new CycleVisitor(bipartiteGraph); // This is clumsy
+        bipartiteGraph.dfs(1,cycleVisitor2);
+    }
 }

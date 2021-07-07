@@ -34,6 +34,8 @@ public class Graph {
     TwoColor[] color;
     boolean bipartite;
 
+    boolean finished;
+
     public Graph(boolean directed) {
         degree = new int[MAXV+1];
         edges = new Edgenode[MAXV+1];
@@ -103,6 +105,8 @@ public class Graph {
             processed[i] = discovered[i] = false;
             parent[i] = -1;
         }
+
+        finished = false;
     }
 
     public void bfs(int start, GraphVisitor bfsVisitor) {
@@ -183,7 +187,7 @@ public class Graph {
         Edgenode p;
         int y;
 
-//        if (finished) return;
+        if (finished) return;
 
         discovered[v] = true;
 //        time++;
@@ -201,7 +205,7 @@ public class Graph {
             } else if (!processed[y] || directed) {
                 dfsVisitor.processEdge(v,y);
             }
-//            if (finished) return;
+            if (finished) return;
             p = p.next;
         }
         dfsVisitor.processVertexLate(v);
