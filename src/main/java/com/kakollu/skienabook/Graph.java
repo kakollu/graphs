@@ -91,6 +91,7 @@ public class Graph {
         edges[x] = p;
         degree[x]++;
         if (!directed) {
+            //noinspection SuspiciousNameCombination
             insertEdge(y,x,true);
         } else {
             nedges++;
@@ -105,8 +106,6 @@ public class Graph {
     }
 
     public void bfs(int start, GraphVisitor bfsVisitor) {
-//        initializeSearch();
-
         Queue<Integer> q = new ArrayDeque<>();
 
         int v;
@@ -177,8 +176,41 @@ public class Graph {
             }
         }
 
+        // Key learning - bfs visits one level at a time bipartite can only connect to alternate levels.
     }
 
+    public void dfs(int v, GraphVisitor dfsVisitor) {
+        Edgenode p;
+        int y;
+
+//        if (finished) return;
+
+        discovered[v] = true;
+//        time++;
+//        entryTime[v] = time;
+
+        dfsVisitor.processVertexEarly(v);
+
+        p = edges[v];
+        while (p != null) {
+            y = p.y;
+            if (!discovered[y]) {
+                parent[y]=v;
+                dfsVisitor.processEdge(v,y);
+                dfs(y,dfsVisitor);
+            } else if (!processed[y] || directed) {
+                dfsVisitor.processEdge(v,y);
+            }
+//            if (finished) return;
+            p = p.next;
+        }
+        dfsVisitor.processVertexLate(v);
+
+//        time++;
+//        exitTime[v] = time;
+
+        processed[v] = true;
+    }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -61,4 +61,11 @@ public class GraphTest {
         bipartiteGraph.twocolor(bipartiteVisitor);
         assertTrue(bipartiteGraph.bipartite);
     }
+
+    @Test
+    public void dfsTest() {
+        GraphVisitor bfsVisitor = new BfsVisitor();
+        simpleGraph1.dfs(1,bfsVisitor);
+        simpleGraph1.findPath(1,4);
+    }
 }
